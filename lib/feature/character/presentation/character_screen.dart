@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rickandmorty/core/di/injector.dart';
+import 'package:rickandmorty/core/router/router.dart';
 import 'package:rickandmorty/core/theme/app_color.dart';
 import 'package:rickandmorty/core/theme/app_theme.dart';
 import 'package:rickandmorty/feature/character/domain/entity/character.dart';
@@ -126,68 +127,71 @@ class _CharacterScreenState extends State<CharacterScreen> {
                             final character = data.characters[index];
                             return Skeletonizer(
                               enabled: data.state == CharacterState.loading,
-                              child: Container(
-                                decoration: AppTheme.boxDecoration,
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                child: Row(
-                                  spacing: 16,
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 24,
-                                      backgroundColor: Colors.grey[200],
-                                      child: CachedNetworkImage(
-                                        imageUrl: character.image,
-                                        imageBuilder: (context, imageProvider) => CircleAvatar(
-                                          radius: 24,
-                                          backgroundColor: Colors.grey[200],
-                                          backgroundImage: imageProvider,
-                                        ),
-                                        placeholder: (context, url) => CircularProgressIndicator.adaptive(
-                                          backgroundColor: Colors.grey[200],
-                                        ),
-                                        errorWidget: (context, url, error) => Icon(Icons.error, size: 20),
-                                      ),
-                                    ),
-
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Skeleton.leaf(
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              spacing: 4,
-                                              children: [
-                                                Flexible(
-                                                  child: Text(
-                                                    character.name,
-                                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ),
-                                                ),
-                                                Container(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(16),
-                                                    color: character.status == 'Alive'
-                                                        ? greenColor
-                                                        : character.status == 'Dead'
-                                                        ? redColor
-                                                        : warningColor,
-                                                  ),
-                                                  child: Text(
-                                                    character.status,
-                                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: blackColor),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                              child: GestureDetector(
+                                onTap: () => context.pushRoute(CharacterDetailRoute(character: character)),
+                                child: Container(
+                                  decoration: AppTheme.boxDecoration,
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                  child: Row(
+                                    spacing: 16,
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 24,
+                                        backgroundColor: Colors.grey[200],
+                                        child: CachedNetworkImage(
+                                          imageUrl: character.image,
+                                          imageBuilder: (context, imageProvider) => CircleAvatar(
+                                            radius: 24,
+                                            backgroundColor: Colors.grey[200],
+                                            backgroundImage: imageProvider,
                                           ),
-                                          Text(character.species),
-                                        ],
+                                          placeholder: (context, url) => CircularProgressIndicator.adaptive(
+                                            backgroundColor: Colors.grey[200],
+                                          ),
+                                          errorWidget: (context, url, error) => Icon(Icons.error, size: 20),
+                                        ),
                                       ),
-                                    ),
-                                  ],
+
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Skeleton.leaf(
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                spacing: 4,
+                                                children: [
+                                                  Flexible(
+                                                    child: Text(
+                                                      character.name,
+                                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(16),
+                                                      color: character.status == 'Alive'
+                                                          ? greenColor
+                                                          : character.status == 'Dead'
+                                                          ? redColor
+                                                          : warningColor,
+                                                    ),
+                                                    child: Text(
+                                                      character.status,
+                                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: blackColor),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Text(character.species),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             );
